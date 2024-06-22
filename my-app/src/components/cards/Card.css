@@ -1,0 +1,104 @@
+/* Card.css */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap');
+
+.card {
+  border-radius: 15px;
+  padding: 0px 25px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  transition: all 0.35s ease 0s;
+  /* max-width: 441px !important; */
+  
+}
+
+.card h4 {
+  /* display: flex; */
+  /* align-items: flex-start; */
+  font-family: 'Jost', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 25px;
+  margin-bottom: 16px;
+  color: rgb(10, 10, 10);
+  /* justify-content: space-between; */
+}
+.card .header{
+    display: flex;
+    align-items: flex-start;
+    line-height: 25px;
+    margin-bottom: 16px;
+    color: rgb(10, 10, 10);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card p {
+  font-family: 'Jost', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  color: rgb(64, 64, 64);
+  text-align: left;
+}
+
+.card .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+}
+.card .duedate p {
+  display: flex;
+  justify-content: end;
+  font-size: 13px !important;
+  /* align-items: center; */
+}
+
+.card .actions span {
+  display: inline-block;
+  margin: -5px;
+}
+.card .duedate span {
+  display: inline-block;
+  margin: -5px;
+}
+
+.card .actions span svg {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-text);
+  margin: 5px;
+}
+
+.card .actions svg {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-text);
+}
+.card-personal {
+    background: #5F63F240;
+  }
+  
+  .card-personal:hover {
+    background: #5F63F290;
+  }
+  
+  .card-work {
+    background: #20C99740;
+  }
+  
+  .card-work:hover {
+    background: #20C99790;
+  }
+  
+  .card-important {
+    background: #2C99FF40;
+  }
+  
+  .card-important:hover {
+    background: #2C99FF90;
+  }
+  
