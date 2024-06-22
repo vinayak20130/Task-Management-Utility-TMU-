@@ -317,7 +317,6 @@ const Notes = () => {
             <Select>
               <Option value="personal">Personal</Option>
               <Option value="work">Work</Option>
-              <Option value="social">Social</Option>
               <Option value="important">Important</Option>
             </Select>
           </Form.Item>
