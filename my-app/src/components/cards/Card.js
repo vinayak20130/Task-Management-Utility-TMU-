@@ -4,12 +4,13 @@ import UilEditAlt from '@iconscout/react-unicons/icons/uil-edit-alt';
 import UilTrashAlt from '@iconscout/react-unicons/icons/uil-trash-alt';
 import UilAngleDown from '@iconscout/react-unicons/icons/uil-angle-down';
 import UilAngleUp from '@iconscout/react-unicons/icons/uil-angle-up';
+import dayjs from 'dayjs';
 import './Card.css';
 
 function NoteCard({ data, onDelete, onEdit }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { title, key, description, dueDate, label } = data;
-
+  const formattedDueDate = dayjs(dueDate).format('DD-MM-YYYY');
   const toggleDescription = () => {
     setIsExpanded(!isExpanded);
   };
@@ -27,7 +28,7 @@ function NoteCard({ data, onDelete, onEdit }) {
           </span>
         </div>
       </div>
-      <p>{isExpanded ? description : `${description.substring(0, 101)}`}</p>
+      <p>{isExpanded ? description : `${description.substring(0, 101)}...`}</p>
       {description.length > 100 && 
       <div onClick={toggleDescription}>
         {isExpanded ? <UilAngleUp/> : <UilAngleDown/>}
@@ -35,7 +36,7 @@ function NoteCard({ data, onDelete, onEdit }) {
     }
       </div>
       <div className="duedate">
-        <p>{dueDate}</p>
+        <p>{formattedDueDate}</p>
       </div>
     </div>
   );

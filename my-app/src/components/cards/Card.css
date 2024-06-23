@@ -40,6 +40,10 @@
   line-height: 24px;
   color: rgb(64, 64, 64);
   text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  
 }
 
 .card .actions {

@@ -1,223 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NoteCard from '../components/cards/Card';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import { Modal, Form, Input, DatePicker, Select } from 'antd';
 import CustomButton from '../components/buttons/button';
 import './Notes.css';
+import axios from 'axios';
 import dayjs from 'dayjs';
 const { Option } = Select;
-const sampleData = [
-  {
-    id: '1',
-    title: 'Personal Note',
-    key: 1,
-    description: `This is a personal note description This is a personal 
-      note descriptionThis is a personal note description This is a
-       personal note description This is a personal note description T
-       his is a personal note descriptionThis is a personal note description
-       This is a personal note descriptionThis is a personal note descriptionThis i
-       s a personal note descriptionThis is a personal note description.`,
-    dueDate: '2024/4/19',
-    label: 'personal',
-  },
-  {
-    id: '2',
-    title: 'Work Note',
-    key: 2,
-    description: 'This is a work note descr',
-    dueDate: '19/4/24',
-    label: 'work',
-  },
-  {
-    id: '3',
-    title: 'Social Note',
-    key: 3,
-    description: 'This is a social note description.',
-    dueDate: '19/4/24',
-    label: 'work',
-  },
-  {
-    id: '4',
-    title: 'Important Note',
-    key: 4,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '5',
-    title: 'Important Note',
-    key: 5,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '6',
-    title: 'Important Note',
-    key: 6,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '7',
-    title: 'Important Note',
-    key: 7,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '8',
-    title: 'Important Note',
-    key: 8,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '9',
-    title: 'Important Note',
-    key: 9,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '10',
-    title: 'Important Note',
-    key: 10,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '11',
-    title: 'Important Note',
-    key: 11,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '12',
-    title: 'Important Note',
-    key: 12,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '13',
-    title: 'Important Note',
-    key: 13,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '14',
-    title: 'Important Note',
-    key: 14,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '15',
-    title: 'Important Note',
-    key: 15,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '16',
-    title: 'Important Note',
-    key: 16,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '17',
-    title: 'Important Note',
-    key: 17,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    id: '18',
-    title: 'Important Note',
-    key: 18,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    title: 'Important Note',
-    key: 19,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    title: 'Important Note',
-    key: 20,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    title: 'Important Note',
-    key: 21,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    title: 'Important Note',
-    key: 22,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    title: 'Important Note',
-    key: 23,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-  {
-    title: 'Important Note',
-    key: 24,
-    description: 'This is an important note description.',
-    dueDate: '19/4/24',
-    label: 'important',
-  },
-];
 
 const Notes = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [sampleData, setSampleData] = useState();
+  const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [form] = Form.useForm();
   const [editForm] = Form.useForm();
   const [editingTask, setEditingTask] = useState(null);
 
+  const getTodo = async () => {
+    try {
+      const response = await axios.get('/api/v1/getaTodo');
+      setSampleData(response.data.data);
+      console.log(response.data.data);
+      setRefreshTrigger(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getTodo();
+  }, [refreshTrigger]);
+
   const showModal = () => {
     setIsModalVisible(true);
   };
-
+  console.log('sample Data is', sampleData);
   const handleOk = () => {
     form
       .validateFields()
       .then((values) => {
         console.log('Form values:', values);
-        setIsModalVisible(false);
-        form.resetFields();
+        axios
+          .post('http://localhost:4000/api/v1/createTodo', {
+            title: values.title,
+            description: values.description,
+            dueDate: values.dueDate,
+            label: values.label,
+          })
+          .then((response) => {
+            console.log('API response:', response.data);
+            setIsModalVisible(false);
+            form.resetFields();
+            setRefreshTrigger(true);
+          })
+          .catch((error) => {
+            console.error('API error:', error);
+          });
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -245,9 +84,23 @@ const Notes = () => {
       .validateFields()
       .then((values) => {
         console.log('Edit form values:', values);
-        console.log('Editing task id:', editingTask.id);
-        setIsEditModalVisible(false);
-        editForm.resetFields();
+        console.log('Editing task id:', editingTask._id);
+
+        axios
+          .put(
+            `http://localhost:4000/api/v1/updateTodo/${editingTask._id}`,
+            values
+          )
+          .then((response) => {
+            console.log('Update successful:', response.data);
+            setIsEditModalVisible(false);
+            editForm.resetFields();
+            setRefreshTrigger(true);
+            // Update the local state with the updated task
+          })
+          .catch((error) => {
+            console.error('Update failed:', error);
+          });
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -259,8 +112,16 @@ const Notes = () => {
     editForm.resetFields();
   };
 
-  const handleDelete = (key) => {
-    console.log(`Delete note with key ${key}`);
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:4000/api/v1/deleteTodo/${id}`)
+      .then((response) => {
+        console.log('Delete successful:', response.data);
+        setRefreshTrigger(true);
+      })
+      .catch((error) => {
+        console.error('Delete failed:', error);
+      });
   };
 
   return (
@@ -271,16 +132,21 @@ const Notes = () => {
           <UilPlus className="icon" /> Add Task
         </CustomButton>
       </div>
-      <div className="card-container">
-        {sampleData.map((note) => (
-          <NoteCard
-            key={note.key}
-            data={note}
-            onDelete={handleDelete}
-            onEdit={() => showEditModal(note)}
-          />
-        ))}
-      </div>
+      {Array.isArray(sampleData) && sampleData.length > 0 ? (
+        <div className="card-container">
+          {sampleData.map((note) => (
+            <NoteCard
+              key={note._id}
+              data={note}
+              onDelete={() => handleDelete(note._id)}
+              onEdit={() => showEditModal(note)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div>No data found</div>
+      )}
+
       <Modal
         title="Add Task"
         visible={isModalVisible}
@@ -294,6 +160,7 @@ const Notes = () => {
             label="Title"
             rules={[
               { required: true, message: 'Please enter the task description' },
+              { max: 32, message: 'Title cannot exceed 32 characters' },
             ]}
           >
             <Input />
@@ -312,7 +179,7 @@ const Notes = () => {
             label="Due Date"
             rules={[{ required: true, message: 'Please select the due date' }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY" />
           </Form.Item>
           <Form.Item
             name="label"
@@ -341,6 +208,7 @@ const Notes = () => {
             label="Title"
             rules={[
               { required: true, message: 'Please enter the task description' },
+              { max: 32, message: 'Title cannot exceed 32 characters' },
             ]}
           >
             <Input />
@@ -359,7 +227,7 @@ const Notes = () => {
             label="Due Date"
             rules={[{ required: true, message: 'Please select the due date' }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY" />
           </Form.Item>
           <Form.Item
             name="label"
