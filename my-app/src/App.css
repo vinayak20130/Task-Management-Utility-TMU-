@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+
+* {
+  font-family: 'Jost', sans-serif;
+  box-sizing: inherit;
+}
 .App {
   text-align: center;
 }
@@ -14,6 +20,7 @@
 }
 
 .App-header {
+  font-family: 'Jost', sans-serif;
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -25,6 +32,7 @@
 }
 
 .App-link {
+  font-family: 'Jost', sans-serif;
   color: #61dafb;
 }
 

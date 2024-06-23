@@ -4,22 +4,27 @@ import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import { Modal, Form, Input, DatePicker, Select } from 'antd';
 import CustomButton from '../components/buttons/button';
 import './Notes.css';
-import moment from 'moment';
+import dayjs from 'dayjs';
 const { Option } = Select;
 const sampleData = [
   {
     id: '1',
     title: 'Personal Note',
     key: 1,
-    description: 'This is a personal note description.',
-    dueDate: '19/4/24',
+    description: `This is a personal note description This is a personal 
+      note descriptionThis is a personal note description This is a
+       personal note description This is a personal note description T
+       his is a personal note descriptionThis is a personal note description
+       This is a personal note descriptionThis is a personal note descriptionThis i
+       s a personal note descriptionThis is a personal note description.`,
+    dueDate: '2024/4/19',
     label: 'personal',
   },
   {
     id: '2',
     title: 'Work Note',
     key: 2,
-    description: 'This is a work note description.',
+    description: 'This is a work note descr',
     dueDate: '19/4/24',
     label: 'work',
   },
@@ -229,7 +234,7 @@ const Notes = () => {
     editForm.setFieldsValue({
       title: task.title,
       description: task.description,
-      dueDate: moment(task.dueDate),
+      dueDate: dayjs(task.dueDate),
       label: task.label,
     });
     setIsEditModalVisible(true);
