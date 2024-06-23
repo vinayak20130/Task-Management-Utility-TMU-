@@ -29,9 +29,16 @@ cd Task-Management-Utility-TMU-
 ```
 ### 2.Setup the Frontend
 Navigate to the frontend directory and install dependencies:
+Note yarn is recommended
 ```bash
 cd frontend
+npm install -g yarn
 yarn install
+```
+or
+```bash
+cd frontend
+npm install
 ```
 Environment Variables
 Create a .env file in the root of the frontend directory and add the following environment variables:
