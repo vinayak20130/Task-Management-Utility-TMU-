@@ -29,6 +29,7 @@ cd Task-Management-Utility-TMU-
 ```
 ### 2.Setup the Frontend
 Navigate to the frontend directory and install dependencies:
+
 Note yarn is recommended
 ```bash
 cd frontend
