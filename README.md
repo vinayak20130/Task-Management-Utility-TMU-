@@ -44,11 +44,21 @@ npm install
 Environment Variables
 Create a .env file in the root of the frontend directory and add the following environment variables:
 ```bash
-REACT_APP_GET_TODO_API=http://localhost:4000/api/v1/getTodos
+REACT_APP_GET_TODO_API=http://localhost:4000/api/v1/getaTodo
 REACT_APP_CREATE_TODO_API=http://localhost:4000/api/v1/createTodo
 REACT_APP_UPDATE_TODO_API=http://localhost:4000/api/v1/updateTodo
 REACT_APP_DELETE_TODO_API=http://localhost:4000/api/v1/deleteTodo
 ```
+proxy is available for local host:4000 in package.json in frontend
+so this can be used directly
+
+```bash
+REACT_APP_GET_TODO_API=/api/v1/getaTodo
+REACT_APP_CREATE_TODO_API=/api/v1/createTodo
+REACT_APP_UPDATE_TODO_API=/api/v1/updateTodo
+REACT_APP_DELETE_TODO_API=/api/v1/deleteTodo
+```
+
 ### 3. Setup the Backend
 Navigate to the backend directory and install dependencies:
 ```bash
@@ -112,3 +122,4 @@ This project is licensed under the MIT License.
 - **axios**: Used for making HTTP requests to the backend API, handling CRUD operations for tasks.
 
 This `README.md` file provides a comprehensive guide for users to install and start your project, along with information on the libraries and tools used.
+getTodoById has been implemented but has not been use in frontend
