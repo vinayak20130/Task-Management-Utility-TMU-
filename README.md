@@ -31,7 +31,7 @@ cd Task-Management-Utility-TMU-
 Navigate to the frontend directory and install dependencies:
 ```bash
 cd frontend
-npm install
+yarn install
 ```
 Environment Variables
 Create a .env file in the root of the frontend directory and add the following environment variables:
