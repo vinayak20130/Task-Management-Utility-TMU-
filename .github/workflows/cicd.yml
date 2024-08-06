@@ -1,0 +1,35 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches:
+      - Task-Management-Utility-TMU-
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Clean and Install Dependencies
+        run: |
+          rm -rf node_modules
+          npm ci
+          npm install -g npm@latest
+
+      - name: Rebuild Native Modules
+        run: npm rebuild bcrypt --build-from-source
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 98
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
