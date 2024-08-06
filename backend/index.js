@@ -10,23 +10,27 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://98-gfgwb9cjgfhsdecj.southeastasia-01.azurewebsites.net',
+  credentials: true
+}));
 
-app.use(express.static(path.join(__dirname, 'frontend', 'build'))); // Serve static files
+// Serve static files from the frontend build directory
+app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
+// API routes
 app.use('/api/v1', todoRoutes);
 app.use('/api/auth', authRoutes);
 
-app.get('', (req, res) => {
+// Serve frontend index.html for all other routes
+app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
 });
 
-app.get('/', (req, res) => {
-  res.send('<h1>This is the home page</h1>');
-});
-
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
 });
 
+// Connect to the database
 dbConnect();

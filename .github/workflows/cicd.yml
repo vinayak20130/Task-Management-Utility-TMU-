@@ -3,12 +3,13 @@ name: Deploy to Azure App Service
 on:
   push:
     branches:
-      - main
+      - Task-Management-Utility-TMU-
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
@@ -18,15 +19,13 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Clean and Install Dependencies
+      - name: Build Backend and Frontend
         run: |
-          cd frontend
-          rm -rf node_modules
+          cd backend
           npm install
-
-      - name: Build React App
-        run: |
-          cd frontend
+          npm run build
+          cd ../frontend
+          npm install
           npm run build
 
       - name: Deploy to Azure App Service
@@ -34,4 +33,4 @@ jobs:
         with:
           app-name: 98
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./frontend/build
+          package: backend
