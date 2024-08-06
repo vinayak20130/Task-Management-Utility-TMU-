@@ -80,27 +80,27 @@
   height: 16px;
   color: var(--gray-text);
 }
-.card-personal {
+.card-todo {
     background: #5F63F240;
   }
   
-  .card-personal:hover {
+  .card-todo:hover {
     background: #5F63F290;
   }
   
-  .card-work {
+  .card-inprogress {
     background: #20C99740;
   }
   
-  .card-work:hover {
+  .card-inprogress:hover {
     background: #20C99790;
   }
   
-  .card-important {
+  .card-done {
     background: #2C99FF40;
   }
   
-  .card-important:hover {
+  .card-done:hover {
     background: #2C99FF90;
   }
   
