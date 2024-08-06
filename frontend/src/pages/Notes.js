@@ -1,61 +1,74 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { googleLogout } from '@react-oauth/google';
 import NoteCard from '../components/cards/Card';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
-import { Modal, Form, Input, DatePicker, Select } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Row, Col, Button } from 'antd';
 import CustomButton from '../components/buttons/button';
 import './Notes.css';
 import axios from 'axios';
 import dayjs from 'dayjs';
+
 const { Option } = Select;
 
+const blockNavigationToLogin = () => {
+  window.history.pushState(null, null, window.location.href);
+  window.addEventListener('popstate', () => {
+    window.history.pushState(null, null, window.location.href);
+  });
+};
+
 const Notes = () => {
+  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [sampleData, setSampleData] = useState();
+  const [sampleData, setSampleData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [form] = Form.useForm();
   const [editForm] = Form.useForm();
   const [editingTask, setEditingTask] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
 
-//function for retriving all todos
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (!isAuthenticated) {
+      navigate('/login', { replace: true });
+    } else {
+      blockNavigationToLogin();
+    }
+
+    getTodo();
+  }, [navigate, refreshTrigger]);
 
   const getTodo = async () => {
     try {
       const response = await axios.get(process.env.REACT_APP_GET_TODO_API);
       setSampleData(response.data.data);
-      console.log(response.data.data);
+      setFilteredData(response.data.data);
       setRefreshTrigger(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-// initially on page lad refresh trigger usestate is set to true
-// and after every action create, modify , delete it is set to true again and retrives updated data 
-  useEffect(() => {
-    getTodo();
-  }, [refreshTrigger]);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
-  // console.log('sample Data is', sampleData);
-
-  // on Task create Submission
 
   const handleOk = () => {
     form
       .validateFields()
       .then((values) => {
-        console.log('Form values:', values);
         axios
-          .post('/api/v1/createTodo', {
+          .post(process.env.REACT_APP_CREATE_TODO_API, {
             title: values.title,
             description: values.description,
             dueDate: values.dueDate,
             label: values.label,
           })
-          .then((response) => {
-            // console.log('API response:', response.data);
+          .then(() => {
             setIsModalVisible(false);
             form.resetFields();
             setRefreshTrigger(true);
@@ -84,25 +97,20 @@ const Notes = () => {
     });
     setIsEditModalVisible(true);
   };
-//on update task api call for updating task info
+
   const handleEditOk = () => {
     editForm
       .validateFields()
       .then((values) => {
-        console.log('Edit form values:', values);
-        console.log('Editing task id:', editingTask._id);
-
         axios
           .put(
             `${process.env.REACT_APP_UPDATE_TODO_API}/${editingTask._id}`,
             values
           )
-          .then((response) => {
-            console.log('Update successful:', response.data);
+          .then(() => {
             setIsEditModalVisible(false);
             editForm.resetFields();
             setRefreshTrigger(true);
-            // Update the local state with the updated task
           })
           .catch((error) => {
             console.error('Update failed:', error);
@@ -117,12 +125,11 @@ const Notes = () => {
     setIsEditModalVisible(false);
     editForm.resetFields();
   };
-// api call on deleting task info
+
   const handleDelete = (id) => {
     axios
       .delete(`${process.env.REACT_APP_DELETE_TODO_API}/${id}`)
-      .then((response) => {
-        console.log('Delete successful:', response.data);
+      .then(() => {
         setRefreshTrigger(true);
       })
       .catch((error) => {
@@ -130,42 +137,108 @@ const Notes = () => {
       });
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleStatusChange = (value) => {
+    setFilterStatus(value);
+  };
+
+  useEffect(() => {
+    let filtered = sampleData;
+
+    if (searchTerm) {
+      filtered = filtered.filter((task) =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filterStatus) {
+      filtered = filtered.filter((task) => task.label === filterStatus);
+    }
+
+    setFilteredData(filtered);
+  }, [searchTerm, filterStatus, sampleData]);
+
+  const handleLogout = () => {
+    googleLogout();
+    localStorage.removeItem('isAuthenticated');
+    navigate('/login', { replace: true });
+  };
+
   return (
-    <div>
+    <>
       <div className="notesHeader">
-        <div>Notes</div>
-        <div className="labels">
-          <div>
-            <div className="personal"></div>
-            Personal
-          </div>
-          <div>
-            <div className="work"></div>
-            Work
-          </div>
-          <div>
-            <div className="important"></div>
-            Important
-          </div>
+        <div>
+          <CustomButton className="add-button" onClick={showModal}>
+            <UilPlus className="icon" /> Add Task
+          </CustomButton>
         </div>
-        <CustomButton className="add-button" onClick={showModal}>
-          <UilPlus className="icon" /> Add Task
-        </CustomButton>
+        <div className="filters">
+          <Input
+            placeholder="Search tasks by name"
+            value={searchTerm}
+            onChange={handleSearch}
+            style={{ width: 200, marginRight: 10 }}
+          />
+          <Select
+            placeholder="Filter by status"
+            value={filterStatus}
+            onChange={handleStatusChange}
+            style={{ width: 200 }}
+          >
+            <Option value="">All</Option>
+            <Option value="todo">Todo</Option>
+            <Option value="inprogress">In Progress</Option>
+            <Option value="done">Done</Option>
+          </Select>
+        </div>
+        <Button onClick={handleLogout} style={{ marginLeft: '10px' }}>
+          Logout
+        </Button>
       </div>
-      {Array.isArray(sampleData) && sampleData.length > 0 ? (
-        <div className="card-container">
-          {sampleData.map((note) => (
-            <NoteCard
-              key={note._id}
-              data={note}
-              onDelete={() => handleDelete(note._id)}
-              onEdit={() => showEditModal(note)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div>No data found</div>
-      )}
+      <Row gutter={16}>
+        <Col span={8}>
+          <h3>Todo</h3>
+          {filteredData
+            .filter((note) => note.label === 'todo')
+            .map((note) => (
+              <NoteCard
+                key={note._id}
+                data={note}
+                onDelete={() => handleDelete(note._id)}
+                onEdit={() => showEditModal(note)}
+              />
+            ))}
+        </Col>
+        <Col span={8}>
+          <h3>In Progress</h3>
+          {filteredData
+            .filter((note) => note.label === 'inprogress')
+            .map((note) => (
+              <NoteCard
+                key={note._id}
+                data={note}
+                onDelete={() => handleDelete(note._id)}
+                onEdit={() => showEditModal(note)}
+              />
+            ))}
+        </Col>
+        <Col span={8}>
+          <h3>Done</h3>
+          {filteredData
+            .filter((note) => note.label === 'done')
+            .map((note) => (
+              <NoteCard
+                key={note._id}
+                data={note}
+                onDelete={() => handleDelete(note._id)}
+                onEdit={() => showEditModal(note)}
+              />
+            ))}
+        </Col>
+      </Row>
 
       <Modal
         title="Add Task"
@@ -207,9 +280,9 @@ const Notes = () => {
             rules={[{ required: true, message: 'Please select a label' }]}
           >
             <Select>
-              <Option value="personal">Personal</Option>
-              <Option value="work">Work</Option>
-              <Option value="important">Important</Option>
+              <Option value="todo">Todo</Option>
+              <Option value="inprogress">In Progress</Option>
+              <Option value="done">Done</Option>
             </Select>
           </Form.Item>
         </Form>
@@ -255,14 +328,14 @@ const Notes = () => {
             rules={[{ required: true, message: 'Please select a label' }]}
           >
             <Select>
-              <Option value="personal">Personal</Option>
-              <Option value="work">Work</Option>
-              <Option value="important">Important</Option>
+              <Option value="todo">Todo</Option>
+              <Option value="inprogress">In Progress</Option>
+              <Option value="done">Done</Option>
             </Select>
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

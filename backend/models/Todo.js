@@ -12,7 +12,7 @@ const todoSchema = new mongoose.Schema({
   label: {
     type: String,
     required: true,
-    enum: ['work', 'personal', 'important'],
+    enum: ['todo', 'inprogress', 'done'],
     maxLength: 50,
   },
   createdAt: {
