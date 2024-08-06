@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Install Backend Dependencies
+      - name: Clean and Install Backend Dependencies
         run: |
           cd backend
           npm install
@@ -29,6 +29,11 @@ jobs:
           cd frontend
           npm install
           npm run build
+
+      - name: Remove unnecessary files
+        run: |
+          find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+          find . -name '*.log' -type f -delete
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
