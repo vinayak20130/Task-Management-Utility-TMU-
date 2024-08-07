@@ -1,3 +1,4 @@
+// src/pages/Notes.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
@@ -8,6 +9,7 @@ import CustomButton from '../components/buttons/button';
 import './Notes.css';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { useAuth } from '../AuthContext'; // Import the useAuth hook
 
 const { Option } = Select;
 
@@ -20,6 +22,7 @@ const blockNavigationToLogin = () => {
 
 const Notes = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth(); // Destructure logout from the AuthContext
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [sampleData, setSampleData] = useState([]);
@@ -44,7 +47,9 @@ const Notes = () => {
 
   const getTodo = async () => {
     try {
-      const response = await axios.get(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/getaTodo`);
+      const response = await axios.get(
+        `https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/getaTodo`
+      );
       setSampleData(response.data.data);
       setFilteredData(response.data.data);
       setRefreshTrigger(false);
@@ -62,12 +67,15 @@ const Notes = () => {
       .validateFields()
       .then((values) => {
         axios
-          .post(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/createTodo`, {
-            title: values.title,
-            description: values.description,
-            dueDate: values.dueDate,
-            label: values.label,
-          })
+          .post(
+            `https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/createTodo`,
+            {
+              title: values.title,
+              description: values.description,
+              dueDate: values.dueDate,
+              label: values.label,
+            }
+          )
           .then(() => {
             setIsModalVisible(false);
             form.resetFields();
@@ -128,7 +136,9 @@ const Notes = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/deleteTodo/${id}`)
+      .delete(
+        `https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/deleteTodo/${id}`
+      )
       .then(() => {
         setRefreshTrigger(true);
       })
@@ -163,7 +173,7 @@ const Notes = () => {
 
   const handleLogout = () => {
     googleLogout();
-    localStorage.removeItem('isAuthenticated');
+    logout(); // Call the logout function from the AuthContext
     navigate('/login', { replace: true });
   };
 
