@@ -12,19 +12,20 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 app.use(cors());
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
 app.use('/api/v1', todoRoutes);
 app.use('/api/auth', authRoutes);
 
-// The "catchall" handler: for any request that doesn't match one above, send back index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+});
+
+app.get('/', (req, res) => {
+  res.send('<h1>This is the home page</h1>');
 });
 
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
+  dbConnect(); // Connect to the database when the server starts
 });
-
-dbConnect();
