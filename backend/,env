@@ -1,0 +1,5 @@
+PORT=4000
+DATABASE_URL=mongodb+srv://vinayak30:JIeSLIlgGRNvUa04@cluster0.fitcv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+SESSION_SECRET=789798798dasda@#!@#
+CALLBACK_URL=http://localhost:4000/auth/google/callback
+JWT_SECRET=789446sdfhjkkh@#$%^
