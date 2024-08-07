@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy-backend:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,17 +19,11 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Cache Backend Node Modules
-        uses: actions/cache@v3
-        with:
-          path: backend/node_modules
-          key: backend-node-modules-${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}
-          restore-keys: |
-            backend-node-modules-${{ runner.os }}-
-
+      # Backend steps
       - name: Install Backend Dependencies
-        working-directory: backend
-        run: npm install
+        run: |
+          cd backend
+          npm install
 
       - name: Deploy Backend to Azure Web App
         uses: azure/webapps-deploy@v2
