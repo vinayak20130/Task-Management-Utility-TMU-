@@ -11,13 +11,19 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
+// CORS options
 const corsOptions = {
   origin: ['http://localhost:3000', 'https://98-gfgwb9cjgfhsdecj.southeastasia-01.azurewebsites.net'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Enable pre-flight across-the-board
+
+// Enable pre-flight across-the-board
+app.options('*', cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
