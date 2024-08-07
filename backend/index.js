@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
-// CORS options
+// Open CORS policy
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://98-gfgwb9cjgfhsdecj.southeastasia-01.azurewebsites.net'],
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
