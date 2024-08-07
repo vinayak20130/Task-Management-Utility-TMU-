@@ -11,13 +11,13 @@ const { Title } = Typography;
 
 const Login = () => {
   const navigate = useNavigate();
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId = "781927388309-9424rc0fqhojghcqeud0b4p26pnmvop5.apps.googleusercontent.com";
 
   const onGoogleSuccess = async (response) => {
     try {
       const { credential } = response;
       const userData = jwtDecode(credential);
-      const result = await axios.post(process.env.REACT_APP_GOOGLE_LOGIN_API, {
+      const result = await axios.post(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/auth//google-signin`, {
         googleId: userData.sub,
         firstName: userData.given_name,
         lastName: userData.family_name,
@@ -45,7 +45,7 @@ const Login = () => {
 
   const onFinish = async (values) => {
     try {
-      const result = await axios.post(process.env.REACT_APP_LOGIN_API, values);
+      const result = await axios.post(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/auth/login`, values);
       message.success(result.data.message || 'Logged in successfully!');
       localStorage.setItem('token', result.data.token);
       localStorage.setItem('user', JSON.stringify(result.data.user));

@@ -11,7 +11,8 @@ const { Title } = Typography;
 
 const Signup = () => {
   const navigate = useNavigate();
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId =
+    '781927388309-9424rc0fqhojghcqeud0b4p26pnmvop5.apps.googleusercontent.com';
 
   const [form] = Form.useForm();
 
@@ -19,23 +20,29 @@ const Signup = () => {
     try {
       const { credential } = response;
       const userData = jwtDecode(credential);
-      const result = await axios.post(process.env.REACT_APP_GOOGLE_SIGNUP_API, {
-        googleId: userData.sub,
-        firstName: userData.given_name,
-        lastName: userData.family_name,
-        email: userData.email,
-      });
-  
+      const result = await axios.post(
+        `https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/auth/google-signup`,
+        {
+          googleId: userData.sub,
+          firstName: userData.given_name,
+          lastName: userData.family_name,
+          email: userData.email,
+        }
+      );
+
       message.success(result.data.message || 'Signed up successfully!');
       localStorage.setItem('token', result.data.token);
       localStorage.setItem('user', JSON.stringify(result.data.user));
       navigate('/notes');
     } catch (error) {
       console.error('Google Signup Error:', error);
-      message.error(error.response?.data?.message || 'Something went wrong during signup. Please try again.');
+      message.error(
+        error.response?.data?.message ||
+          'Something went wrong during signup. Please try again.'
+      );
     }
   };
-  
+
   const onGoogleFailure = (response) => {
     console.log('Google Signup Failed:', response);
     message.error('Google Signup Failed. Please try again.');
@@ -43,7 +50,10 @@ const Signup = () => {
 
   const onFinish = async (values) => {
     try {
-      const result = await axios.post(process.env.REACT_APP_SIGNUP_API, values);
+      const result = await axios.post(
+        `https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/auth/signup`,
+        values
+      );
 
       message.success('Signed up successfully!');
       localStorage.setItem('token', result.data.token);

@@ -44,7 +44,7 @@ const Notes = () => {
 
   const getTodo = async () => {
     try {
-      const response = await axios.get(process.env.REACT_APP_GET_TODO_API);
+      const response = await axios.get(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/getaTodo`);
       setSampleData(response.data.data);
       setFilteredData(response.data.data);
       setRefreshTrigger(false);
@@ -62,7 +62,7 @@ const Notes = () => {
       .validateFields()
       .then((values) => {
         axios
-          .post(process.env.REACT_APP_CREATE_TODO_API, {
+          .post(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/createTodo`, {
             title: values.title,
             description: values.description,
             dueDate: values.dueDate,
@@ -104,7 +104,7 @@ const Notes = () => {
       .then((values) => {
         axios
           .put(
-            `${process.env.REACT_APP_UPDATE_TODO_API}/${editingTask._id}`,
+            `https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/updateTodo/${editingTask._id}`,
             values
           )
           .then(() => {
@@ -128,7 +128,7 @@ const Notes = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${process.env.REACT_APP_DELETE_TODO_API}/${id}`)
+      .delete(`https://tmu-d5fechcvf6g3awgn.eastus-01.azurewebsites.net/api/v1/deleteTodo/${id}`)
       .then(() => {
         setRefreshTrigger(true);
       })

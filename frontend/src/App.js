@@ -8,7 +8,7 @@ import Notes from './pages/Notes';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId = "781927388309-9424rc0fqhojghcqeud0b4p26pnmvop5.apps.googleusercontent.com";
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
