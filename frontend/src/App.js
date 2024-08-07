@@ -22,7 +22,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <AuthProvider>
-        <Router basename="/login">
+        <Router basename="/">
           <div className="App">
             <Routes>
               <Route path="/login" element={<Login />} />
