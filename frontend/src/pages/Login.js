@@ -5,7 +5,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { Form, Input, Button, Typography, Row, Col, message } from 'antd';
 import { GoogleOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { useAuth } from '../AuthContext'; // Import the useAuth hook
 import './Login.css';
 
