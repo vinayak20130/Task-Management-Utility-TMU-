@@ -18,7 +18,7 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <Router basename="https://98-gfgwb9cjgfhsdecj.southeastasia-01.azurewebsites.net/">
+      <Router basename="/">
         <div className="App">
           <Routes>
             <Route path="/login" element={<Login />} />
