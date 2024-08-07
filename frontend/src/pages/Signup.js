@@ -19,23 +19,23 @@ const Signup = () => {
     try {
       const { credential } = response;
       const userData = jwtDecode(credential);
-      const result = await axios.post(process.env.REACT_APP_GOOGLE_LOGIN_API, {
+      const result = await axios.post(process.env.REACT_APP_GOOGLE_SIGNUP_API, {
         googleId: userData.sub,
         firstName: userData.given_name,
         lastName: userData.family_name,
         email: userData.email,
       });
-
-      message.success('Signed up successfully!');
+  
+      message.success(result.data.message || 'Signed up successfully!');
       localStorage.setItem('token', result.data.token);
       localStorage.setItem('user', JSON.stringify(result.data.user));
       navigate('/notes');
     } catch (error) {
       console.error('Google Signup Error:', error);
-      message.error('Something went wrong during signup. Please try again.');
+      message.error(error.response?.data?.message || 'Something went wrong during signup. Please try again.');
     }
   };
-
+  
   const onGoogleFailure = (response) => {
     console.log('Google Signup Failed:', response);
     message.error('Google Signup Failed. Please try again.');

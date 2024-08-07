@@ -4,7 +4,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { Form, Input, Button, Typography, Row, Col, message } from 'antd';
 import { GoogleOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import './Login.css';
 
 const { Title } = Typography;
@@ -17,44 +17,46 @@ const Login = () => {
     try {
       const { credential } = response;
       const userData = jwtDecode(credential);
-      const result = await axios.post(
-        process.env.REACT_APP_GOOGLE_LOGIN_API,
-        {
-          googleId: userData.sub,
-          firstName: userData.given_name,
-          lastName: userData.family_name,
-          email: userData.email,
-        }
-      );
+      const result = await axios.post(process.env.REACT_APP_GOOGLE_LOGIN_API, {
+        googleId: userData.sub,
+        firstName: userData.given_name,
+        lastName: userData.family_name,
+        email: userData.email,
+      });
 
-      message.success('Logged in successfully!');
+      message.success(result.data.message || 'Logged in successfully!');
       localStorage.setItem('token', result.data.token);
       localStorage.setItem('user', JSON.stringify(result.data.user));
+      localStorage.setItem('isAuthenticated', 'true');
       navigate('/notes');
     } catch (error) {
       console.error('Google Login Error:', error);
-      message.error('Something went wrong during login. Please try again.');
+      message.error(
+        error.response?.data?.message ||
+          'Something went wrong during login. Please try again.'
+      );
     }
   };
 
-  const onGoogleFailure = (response) => {
+  const onGoogleLoginFailure = (response) => {
     console.log('Google Login Failed:', response);
     message.error('Google Login Failed. Please try again.');
   };
 
   const onFinish = async (values) => {
     try {
-      const result = await axios.post(
-        process.env.REACT_APP_LOGIN_API,
-        values
-      );
-      message.success('Logged in successfully!');
+      const result = await axios.post(process.env.REACT_APP_LOGIN_API, values);
+      message.success(result.data.message || 'Logged in successfully!');
       localStorage.setItem('token', result.data.token);
       localStorage.setItem('user', JSON.stringify(result.data.user));
+      localStorage.setItem('isAuthenticated', 'true');
       navigate('/notes');
     } catch (error) {
       console.error('Login Error:', error);
-      message.error('Something went wrong during login. Please try again.');
+      message.error(
+        error.response?.data?.message ||
+          'Something went wrong during login. Please try again.'
+      );
     }
   };
 
@@ -101,7 +103,7 @@ const Login = () => {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <GoogleLogin
               onSuccess={onGoogleSuccess}
-              onError={onGoogleFailure}
+              onError={onGoogleLoginFailure}
               clientId={clientId}
               render={(renderProps) => (
                 <Button
